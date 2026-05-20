@@ -12,11 +12,9 @@ export default async function LoginWithGoogle(fastify, opts) {
                 return reply.code(400).send({ error: "Missing code" });
             }
 
-            // 1. Trocar code por tokens
             const { tokens } = await client.getToken(code);
             client.setCredentials(tokens);
 
-            // 2. Validar ID token
             const ticket = await client.verifyIdToken({
                 idToken: tokens.id_token,
                 audience: process.env.GOOGLE_CLIENT_ID,
@@ -25,7 +23,6 @@ export default async function LoginWithGoogle(fastify, opts) {
             const payload = ticket.getPayload();
             const { sub, email, name, picture } = payload;
 
-            // 3. Buscar ou criar user
             let user = await findUserByGoogleId(sub);
 
             if (!user) {
@@ -37,7 +34,6 @@ export default async function LoginWithGoogle(fastify, opts) {
             });
             }
 
-            // 4. Criar JWT
             const token = app.jwt.sign({
                 userId: user.id,
                 email: user.email,
