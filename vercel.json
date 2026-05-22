@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd techcenter-frontend/techcenter-ecommerce && npm install && npm run build",
+  "outputDirectory": "techcenter-frontend/techcenter-ecommerce/.next",
+  "framework": "nextjs"
+}
