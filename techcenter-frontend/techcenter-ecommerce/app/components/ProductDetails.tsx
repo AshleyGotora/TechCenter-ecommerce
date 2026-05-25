@@ -7,6 +7,7 @@ export default function ProductDetail({ product, variations }: { product: any, v
   const storages = [...new Set(variations.map((v: any) => v.storage))] as string[]
   const [selectedStorage, setSelectedStorage] = useState(storages[0])
   const [selectedColor, setSelectedColor] = useState<any>(variations[0])
+  const [quantity, setQuantity] = useState<number>(1)
 
   const colors = [...new Map(
     variations
@@ -18,18 +19,44 @@ export default function ProductDetail({ product, variations }: { product: any, v
     (v: any) => v.storage === selectedStorage && v.color === selectedColor?.color
   ) ?? variations[0]
 
-  const router = useRouter();
+  const router = useRouter()
 
-  const handleBuy = () => {
-    if (typeof window === 'undefined') return
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login')
-      return;
+  const handleAddToCart = () => {
+    const cartStorage = localStorage.getItem('cart')
+    const cart = cartStorage ? JSON.parse(cartStorage) : []
+
+    const existing = cart.find((item: any) => item.variation_id === activeVariation.id)
+
+    if (existing) {
+      existing.quantity += quantity
+    } else {
+      cart.push({
+        variation_id: activeVariation.id,
+        product_name: product.product_name,
+        color: activeVariation.color,
+        storage: activeVariation.storage,
+        url_image: activeVariation.url_image,
+        price: activeVariation.price,
+        quantity
+      })
     }
 
-    console.log('Comprar:', activeVariation);
-  };
+    localStorage.setItem('cart', JSON.stringify(cart))
+    window.dispatchEvent(new Event('storage'))  // ← notified Navbar
+    router.push('/cart')
+  }
+
+  const handleBuy = () => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
+      return
+    }
+    console.log('Comprar:', activeVariation)
+  }
+
+  const handleIncrease = () => setQuantity(q => q + 1)
+  const handleDecrease = () => setQuantity(q => q > 1 ? q - 1 : 1)
 
   return (
     <div className="min-h-screen bg-white flex flex-col lg:flex-row">
@@ -73,7 +100,11 @@ export default function ProductDetail({ product, variations }: { product: any, v
 
         {/* Colors */}
         <div className="mb-8">
-          <div className="flex "><p className="text-md text-black mb-3"><p className="font-bold">COLOUR :</p> {selectedColor?.color}</p></div>
+          <div className="flex">
+            <p className="text-md text-black mb-3">
+              <span className="font-bold">COLOUR :</span> {selectedColor?.color}
+            </p>
+          </div>
           <div className="flex gap-3">
             {colors.map((v: any) => (
               <button
@@ -97,18 +128,28 @@ export default function ProductDetail({ product, variations }: { product: any, v
         </p>
 
         {/* Quantity */}
+        <div className="flex items-center justify-center m-5">
+          <h3 className="text-xl font-bold">{quantity}</h3>
+        </div>
 
-        {/* Button */}
+        {/* Button Add in Cart */}
+        <div className="flex items-center gap-4 w-full mb-5">
+          <button onClick={handleDecrease} className="bg-[#F5F5F7] border border-black rounded-full w-12 h-12 flex items-center justify-center text-lg hover:bg-gray-200 transition-all duration-300 ease-in">
+            <Minus size={20} />
+          </button>
+          <button onClick={handleAddToCart} className="flex-1 bg-black text-white font-bold py-4 rounded-full text-base transition-transform active:scale-95 duration-200">
+            Add in Cart
+          </button>
+          <button onClick={handleIncrease} className="bg-[#F5F5F7] border border-black rounded-full w-12 h-12 flex items-center justify-center text-lg hover:bg-gray-200 transition-all duration-300 ease-in">
+            <Plus size={20} />
+          </button>
+        </div>
+
+        {/* Buy Button */}
         <div className="flex items-center gap-4 w-full">
-            <button className="bg-[#F5F5F7] border border-black rounded-full w-12 h-12 flex items-center justify-center text-lg hover:bg-gray-200 transition-all duration-300 ease-in">
-                <Plus size={20} text-black/>
-            </button>
-            <button onClick={handleBuy} className="flex-1 bg-black text-white font-bold py-4 rounded-full text-base transition-transform active:scale-95 duration-200">
-                Buy
-            </button>
-            <button className="bg-[#F5F5F7] border border-black rounded-full w-12 h-12 flex items-center justify-center text-lg hover:bg-gray-200 transitions-all duration-300 ease-in">
-                <Minus size={20} text-white />
-            </button>
+          <button onClick={handleBuy} className="w-full flex-1 bg-black text-white font-bold py-4 rounded-full text-base transition-transform active:scale-95 duration-200">
+            Buy
+          </button>
         </div>
       </div>
     </div>

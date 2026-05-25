@@ -10,26 +10,47 @@ export default function ProductCard({ product }: { product: any }) {
   const [selectedStorage, setSelectedStorage] = useState(storages[0]);
   const [selectedColor, setSelectedColor] = useState<any>(colors[0]);
   const router = useRouter();
+  const [quantity, setQuantity] = useState<number>(1)
 
   const activeVariation = variations.find(
     (v: any) => v.storage === selectedStorage && v.color === selectedColor?.color
   ) ?? variations[0];
 
-  const handleBuy = () => {
+  const handleAddToCart = () => {
+    const cartStorage = localStorage.getItem('cart')
+    const cart = cartStorage ? JSON.parse(cartStorage) : []
+
+    const existing = cart.find((item: any) => item.variation_id === activeVariation.id)
+
+    if (existing) {
+      existing.quantity += quantity
+    } else {
+      cart.push({
+        variation_id: activeVariation.id,
+        product_name: product.product_name,
+        color: activeVariation.color,
+        storage: activeVariation.storage,
+        url_image: activeVariation.url_image,
+        price: activeVariation.price,
+        quantity
+      })
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart))
+    router.push('/cart')
+  }
+
+  const handleSeeMore = () => {
     if (typeof window === 'undefined') return
     const token = localStorage.getItem('token');
     if (!token) {
-      router.push('/login')
+      router.push(`/product/${product.id}`);
       return;
     }
-
-    console.log('Comprar:', activeVariation);
+    console.log('Ver mais:', activeVariation);
   };
 
-  const handleSeeMore = () => {
-    router.push(`/product/${product.id}`)
-  };
-
+  if (!activeVariation) return null;
 
   return (
     <div className="bg-white border border-gray-100 rounded-[35px] p-6 lg:p-10 flex flex-col items-center shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] h-auto lg:h-[755px] w-[90vw] min-w-[90vw] lg:w-[561px] lg:min-w-[561px] transition-all duration-500 ease-in-out">
@@ -62,13 +83,7 @@ export default function ProductCard({ product }: { product: any }) {
         ))}
       </div>
 
-      <div className="mb-5">
-        <h3 className="uppercase font-bold">
-          {activeVariation.color}
-        </h3>
-      </div>
-
-      <div className="flex gap-3 lg:gap-4 mb-6 lg:mb-12">
+      <div className="flex gap-3 lg:gap-4 mb-3 lg:mb-12">
         {colors.map((v: any) => (
           <button
             key={v.color}
@@ -80,11 +95,23 @@ export default function ProductCard({ product }: { product: any }) {
         ))}
       </div>
 
+      <div className="mb-3 uppercase">
+        <p>
+          {activeVariation.color}
+        </p>
+      </div>
+
       <div className="flex flex-col gap-3 lg:gap-4 w-full mt-auto">
         <button
+          onClick={handleAddToCart}
+          className="w-full bg-black text-white py-3 lg:py-4 rounded-full text-base transition-transform active:scale-95 duration-200">
+          Add in Cart
+        </button>
+        <button
           onClick={handleSeeMore}
-          className="w-full bg-black text-white font-bold py-3 lg:py-4 rounded-full text-base transition-transform active:scale-95 duration-200">
-          Add to Cart
+          className="group relative w-fit mx-auto text-black font-medium py-2 text-base">
+          See more
+          <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-out group-hover:w-full"></span>
         </button>
       </div>
     </div>

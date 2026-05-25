@@ -12,12 +12,27 @@ export default function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   const router = useRouter();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { suggestions, isLoading } = useProductSearch(searchTerm);
+
+  // Conta os itens do carrinho
+  useEffect(() => {
+    const updateCount = () => {
+      const cartStorage = localStorage.getItem('cart')
+      const cart = cartStorage ? JSON.parse(cartStorage) : []
+      const total = cart.reduce((sum: number, item: any) => sum + item.quantity, 0)
+      setCartCount(total)
+    }
+
+    updateCount()
+    window.addEventListener('storage', updateCount)
+    return () => window.removeEventListener('storage', updateCount)
+  }, [])
 
   // Abre/fecha dropdown conforme as sugestões
   useEffect(() => {
@@ -96,7 +111,6 @@ export default function Navbar() {
     );
   };
 
-  // Dropdown reutilizado no desktop e mobile
   const Dropdown = () => (
     <ul className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
       {suggestions.map((product, idx) => (
@@ -148,7 +162,7 @@ export default function Navbar() {
           <Link href="/samsungs" className="text-base font-medium hover:-translate-y-0.5 transition-transform">Samsungs</Link>
           <Link href="/macbooks" className="text-base font-medium hover:-translate-y-0.5 transition-transform">Macbooks</Link>
           <Link href="/airpods" className="text-base font-medium hover:-translate-y-0.5 transition-transform">Airpods</Link>
-          <Link href="/airpods" className="text-base font-medium hover:-translate-y-0.5 transition-transform">About us</Link>
+          <Link href="/about-us" className="text-base font-medium hover:-translate-y-0.5 transition-transform">About us</Link>
 
           {/* BUSCA DESKTOP com autocomplete */}
           <div className="flex items-center gap-4 border-l pl-6 ml-2">
@@ -182,8 +196,14 @@ export default function Navbar() {
               {showDropdown && showSearch && <Dropdown />}
             </div>
 
-            <button className="hover:opacity-60 transition-opacity">
+            {/* Carrinho Desktop */}
+            <button className="relative hover:opacity-60 transition-opacity" onClick={() => router.push('/cart')}>
               <ShoppingCart size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -193,7 +213,17 @@ export default function Navbar() {
           <button onClick={() => { setOpen(true); setShowSearch(true); }} className="hover:opacity-60">
             <Search size={22} />
           </button>
-          <button className="hover:opacity-60"><ShoppingCart size={22} /></button>
+
+          {/* Carrinho Mobile */}
+          <button className="relative hover:opacity-60" onClick={() => router.push('/cart')}>
+            <ShoppingCart size={22} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           <button className="text-black" onClick={() => setOpen(!open)}>
             {open ? <X size={26} /> : <Menu size={26} />}
           </button>
