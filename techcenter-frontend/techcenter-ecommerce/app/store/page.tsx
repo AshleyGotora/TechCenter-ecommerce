@@ -1,5 +1,4 @@
 import ProductCard from "../components/ProductsCard";
-import "dotenv/config";
 
 
 async function GetAllProduct() {
