@@ -1,5 +1,4 @@
 import ProductsCard from "../components/ProductsCard";
-import "dotenv/config";
 
 async function getProducts(brand: string) {
   try {
