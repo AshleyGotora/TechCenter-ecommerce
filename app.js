@@ -5,6 +5,7 @@ import Login from './login.js';
 import Server from './server.js';
 import forgotpassword from './forgotpassword.js';
 import SearchProducts from './SearchProducts.js';
+import CartRoutes from './cart.js';
 import cors from '@fastify/cors';
 import 'dotenv/config';
 
@@ -49,9 +50,11 @@ const start = async () => {
     await app.register(SearchProducts);
     console.log('✅ SearchBar running!');
 
+    await app.register(SearchProducts);
+    console.log('✅ CartRoutes running!');
+
     const portToUse = process.env.PORT;
 
-    // No app.js, depois do app.ready() ou antes do listen:
     await app.ready();
     console.log(app.printRoutes());
 
@@ -61,7 +64,7 @@ const start = async () => {
   } catch (err) {
     app.log.error(err);
     process.exit(1);
-  }
+  } 
 };
 
 

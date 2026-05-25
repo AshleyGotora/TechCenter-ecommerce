@@ -15,7 +15,7 @@ export default function SignUp() {
 
   const [message, setMessage] = useState({ text: "", isError: false });
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter(); // ← ADICIONADO: aqui fora de qualquer função
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

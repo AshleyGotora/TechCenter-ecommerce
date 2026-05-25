@@ -49,7 +49,7 @@ export default function ProductDetail({ data }: { data: ProductData }) {
     <main className="pt-28 px-8 max-w-5xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-        {/* Imagem */}
+        {/* Image */}
         <div className="bg-white rounded-2xl p-10 flex items-center justify-center min-h-80">
           <div className="relative w-64 h-64">
             <Image
@@ -68,7 +68,7 @@ export default function ProductDetail({ data }: { data: ProductData }) {
             {product.product_name}
           </h1>
 
-          {/* Armazenamento */}
+          {/* Storage */}
           <div className="flex gap-3 mb-5 flex-wrap">
             {storages.map((s) => (
               <button
@@ -86,7 +86,7 @@ export default function ProductDetail({ data }: { data: ProductData }) {
             ))}
           </div>
 
-          {/* Cores */}
+          {/* Colors */}
           <div className="flex gap-3 mb-4">
             {colors.map((c) => (
               <button
@@ -103,12 +103,12 @@ export default function ProductDetail({ data }: { data: ProductData }) {
             ))}
           </div>
 
-          {/* Cor activa */}
+          {/* Active color */}
           <p className="text-sm text-gray-400 mb-3">
             Cor: <span className="font-bold text-black">{selectedColor.color}</span>
           </p>
 
-          {/* Preço */}
+          {/* Price */}
           <p className="text-xl font-bold mb-6">
             Preço:{" "}
             {current
@@ -116,7 +116,7 @@ export default function ProductDetail({ data }: { data: ProductData }) {
               : "—"}
           </p>
 
-          {/* Descrição */}
+          {/* Description */}
           <pre className="text-sm text-gray-500 whitespace-pre-wrap mb-6
                           font-[family-name:var(--font-js)] leading-relaxed">
             {product.description}

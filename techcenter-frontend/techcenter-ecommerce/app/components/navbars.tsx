@@ -59,7 +59,7 @@ export default function Navbar() {
     setShowDropdown(false);
     setOpen(false);
     setShowSearch(false);
-    router.push(`/produtos/${product.id}`);
+    router.push(`/product/${product.id}`);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

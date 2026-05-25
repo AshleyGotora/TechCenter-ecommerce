@@ -7,7 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState({ text: '', isError: false });
-  const router = useRouter(); // aqui, fora de qualquer função
+  const router = useRouter();
 
   const sendData = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,5 +1,4 @@
 import ProductsCard from "../components/ProductsCard";
-import "dotenv/config";
 
 async function getProducts(brand: string) {
   try {
@@ -25,19 +24,16 @@ export default async function IphonesPage() {
 
   const renderRow = (title: string, items: any[]) => (
     <div className="mb-12">
-      {/* Título da Linha opcional ou apenas o espaço */}
       <div className="max-w-7xl mx-auto px-6 mb-4">
          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
       </div>
       
-      {/* Container do Carrossel */}
       <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 pb-8 scrollbar-hide">
         {items.map((product: any) => (
           <div key={product.id} className="snap-center shrink-0">
             <ProductsCard product={product} />
           </div>
         ))}
-        {/* Espaçador final para o scroll não colar na borda direita */}
         <div className="shrink-0 w-6" />
       </div>
     </div>

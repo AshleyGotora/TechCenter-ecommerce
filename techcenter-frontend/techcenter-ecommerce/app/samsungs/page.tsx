@@ -14,7 +14,7 @@ async function getProducts(brand: string) {
   }
 }
 
-export default async function IphonesPage() {
+export default async function SamsungPage() {
   const products = await getProducts("Samsung");
   
   const seriesS23 = products.filter((p: any) => p.product_name.includes("S23"));

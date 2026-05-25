@@ -17,27 +17,19 @@ export default function ProductCard({ product }: { product: any }) {
 
   const handleBuy = () => {
     if (typeof window === 'undefined') return
-    const token = localStorage.getItem('token'); // verifica se tem token
+    const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login')
       return;
     }
-    // tem conta → continua com a compra (implementar depois)
+
     console.log('Comprar:', activeVariation);
   };
 
   const handleSeeMore = () => {
-    if (typeof window === 'undefined') return
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-    // tem conta → continuar (implementar depois)
-    console.log('Ver mais:', activeVariation);
+    router.push(`/product/${product.id}`)
   };
 
-  if (!activeVariation) return null;
 
   return (
     <div className="bg-white border border-gray-100 rounded-[35px] p-6 lg:p-10 flex flex-col items-center shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] h-auto lg:h-[755px] w-[90vw] min-w-[90vw] lg:w-[561px] lg:min-w-[561px] transition-all duration-500 ease-in-out">
@@ -70,6 +62,12 @@ export default function ProductCard({ product }: { product: any }) {
         ))}
       </div>
 
+      <div className="mb-5">
+        <h3 className="uppercase font-bold">
+          {activeVariation.color}
+        </h3>
+      </div>
+
       <div className="flex gap-3 lg:gap-4 mb-6 lg:mb-12">
         {colors.map((v: any) => (
           <button
@@ -84,15 +82,9 @@ export default function ProductCard({ product }: { product: any }) {
 
       <div className="flex flex-col gap-3 lg:gap-4 w-full mt-auto">
         <button
-          onClick={handleBuy}
-          className="w-full bg-black text-white font-bold py-3 lg:py-4 rounded-full text-base transition-transform active:scale-95 duration-200">
-          Buy
-        </button>
-        <button
           onClick={handleSeeMore}
-          className="group relative w-fit mx-auto text-black font-medium py-2 text-base">
-          See more
-          <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-out group-hover:w-full"></span>
+          className="w-full bg-black text-white font-bold py-3 lg:py-4 rounded-full text-base transition-transform active:scale-95 duration-200">
+          Add to Cart
         </button>
       </div>
     </div>
