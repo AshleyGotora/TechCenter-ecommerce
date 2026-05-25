@@ -50,7 +50,7 @@ const start = async () => {
     await app.register(SearchProducts);
     console.log('✅ SearchBar running!');
 
-    await app.register(SearchProducts);
+    await app.register(CartRoutes);
     console.log('✅ CartRoutes running!');
 
     const portToUse = process.env.PORT;
